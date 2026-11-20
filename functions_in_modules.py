@@ -1,3 +1,9 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# - För klassens grundstruktur har jag haft stor hjälp av boken 'Python från början' av Jan Skansholm.
+# - Övriga källor för denna klass är https://www.w3schools.com/python/default.asp och kursmaterialet.
+
 class DataInvestigator:
     """ Klass för att undersöka och sammanfatta data."""
 

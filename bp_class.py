@@ -2,16 +2,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
+# - För arbetet att strukturera klasserna har jag haft stor hjälp av boken 'Python från början' av Jan Skansholm.
+# - För felsökning av kod i klasserna har jag tagit hjälp av Microsoft Copilot. 
+# - Figurerna för att visa resultatet av regressionanalyserna var svåra att få till och jag har behövt flera källor:
+# - https://docs.python.org/3.14/index.html, https://www.w3schools.com/python/default.asp, 
+# - 'Python från början' samt kursmaterialet med videos och textdokumentation.
+
 class BloodPressureInvestigator:
     """Analyserar ett dataset med hälsodata för att undersöka olika faktorers association med systoliskt blodtryck. 
     
     Klassen kan användas för:
-    - Enkel linjär regression, med en förklarande variabel
+    - Enkel linjär regression, med enstaka förklarande variabel
     - Multipel linjär regression, med flera förklarande variabler
     - Sammanfattning av de regressionsanalyser som gjorts
     - Visualisera regressionslinje och observerade data för enkel regression
-    - Visualisera modellens prediktion mot faktiskt utfall i data (x-axel: datans blodtryck, y-axel: modellens prediktion)
-    - Prediktera systoliskt blodtryck för en ny individ, baserat på en tränad regressionsmodell
+    - Visualisera modellens prediktion mot faktiskt utfall i data (x-axel: observerat blodtryck, y-axel: modellens prediktion)
 
     Som parameter tar klassen in ett dataset i form av pandas.DataFrame
     
@@ -46,7 +51,7 @@ class BloodPressureInvestigator:
             "predictor": predictor,
             "intercept": self.model.intercept_,
             "slope": self.model.coef_[0],
-            "r2": self.model.score(X, y)
+            "R2": self.model.score(X, y)
         }
 
     def multiple_regression(self, predictors):
@@ -62,7 +67,7 @@ class BloodPressureInvestigator:
             "predictors": predictors,
             "intercept": self.model.intercept_,
             "coefficients": dict(zip(predictors, self.model.coef_)),
-            "r2": self.model.score(X, y)
+            "R2": self.model.score(X, y)
         }
 
     def print_summary(self):
@@ -78,7 +83,7 @@ class BloodPressureInvestigator:
         for predictor, coef in zip(self.predictors, self.model.coef_):
             print(f'{predictor:<12} {coef:.3f}')
 
-        print(f'\nR²: {self.model.score(X, y):.3f}')
+        print(f'\nR2: {self.model.score(X, y):.3f}')
 
     def plot_regression(self, predictor):
         self._check_model()
@@ -116,12 +121,5 @@ class BloodPressureInvestigator:
         plt.plot([y.min(), y.max()], [y.min(), y.max()], color="red", linestyle="--", linewidth=2)
         plt.xlabel("Observerat blodtryck")
         plt.ylabel("Predikterat blodtryck")
-        plt.title("Multipel regression: observerat vs predikterat")
+        plt.title("Träffsäkerhet multipel regression")
         plt.show()
-
-    def predict(self, **kwargs):
-        self._check_model()
-
-        X_new = pd.DataFrame([[kwargs[p] for p in self.predictors]], columns=self.predictors)
-
-        return self.model.predict(X_new)[0]
