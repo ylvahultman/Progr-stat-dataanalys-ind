@@ -12,11 +12,13 @@ class BloodPressureInvestigator:
     """Analyserar ett dataset med hälsodata för att undersöka olika faktorers association med systoliskt blodtryck. 
     
     Klassen kan användas för:
+    
     - Enkel linjär regression, med enstaka förklarande variabel
     - Multipel linjär regression, med flera förklarande variabler
     - Sammanfattning av de regressionsanalyser som gjorts
     - Visualisera regressionslinje och observerade data för enkel regression
     - Visualisera modellens prediktion mot faktiskt utfall i data (x-axel: observerat blodtryck, y-axel: modellens prediktion)
+    - Visualisera residualer från multipel regression
 
     Som parameter tar klassen in ett dataset i form av pandas.DataFrame
     
@@ -122,4 +124,21 @@ class BloodPressureInvestigator:
         plt.xlabel("Observerat blodtryck")
         plt.ylabel("Predikterat blodtryck")
         plt.title("Träffsäkerhet multipel regression")
+        plt.show()
+
+    def plot_residuals(self):
+        self._check_model()
+
+        X = self.df[self.predictors]
+        y_true = self.df["systolic_bp"]
+        y_pred = self.model.predict(X)
+        residuals = y_true - y_pred
+
+        plt.figure(figsize=(8, 5))
+        plt.scatter(y_pred, residuals, alpha=0.6)
+        plt.axhline(y=0, color="red", linestyle="--", label="Residual = 0")
+        plt.xlabel("Predikterat blodtryck")
+        plt.ylabel("Residual")
+        plt.title("Residualer vid multipel regression")
+        plt.legend()
         plt.show()
